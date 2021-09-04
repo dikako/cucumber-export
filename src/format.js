@@ -54,6 +54,7 @@ module.exports = function (metadata, testResult) {
     timestamp: moment().format(),
     type: 'testSuite',
     total: features.length,
+    success: features.reduce((total, feature) => total + feature.failed, 0) === 0,
     passed: features.filter(r => r.result).length,
     failed: features.filter(r => r.total !== r.skipped).filter(r => !r.result).length,
     skipped: features.filter(r => r.total === r.skipped).length,
