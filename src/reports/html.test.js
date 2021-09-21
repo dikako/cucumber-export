@@ -28,7 +28,8 @@ describe('#Channel - html', () => {
       "foo": "bar"
     }
 
-    await expect(Html(config, result)).resolves.toEqual(`[HTML REPORT][SUCCESS] - Your report has been generated at file://${FOLDER}/index.html`)
+    const expectedMessage = `[HTML REPORT][SUCCESS] - Your report has been generated at file://${FOLDER}/index.html`
+    await expect(Html(config, result)).resolves.toEqual(expectedMessage)
 
     fs.readdirSync(HTML_TEMPLATE_FOLDER).forEach( item => {
       let expectedFilename = fs.existsSync(path.resolve(FOLDER, item)) 
@@ -65,7 +66,8 @@ window.RESTQA_RESULT = {
       "foo": "bar"
     }
 
-    await expect(Html(config, result)).resolves.toEqual(`[HTML REPORT][SUCCESS] - Your report has been generated at file://${FOLDER}/index.html`)
+    const expectedMessage = `[HTML REPORT][SUCCESS] - Your report has been generated at file://${FOLDER}/index.html`
+    await expect(Html(config, result)).resolves.toEqual(expectedMessage)
 
     fs.readdirSync(HTML_TEMPLATE_FOLDER).forEach( item => {
       let expectedFilename = fs.existsSync(path.resolve(FOLDER, item)) 
@@ -96,6 +98,7 @@ window.RESTQA_RESULT = {
       "foo": "bar"
     }
 
-    expect(Html(config, result)).rejects.toEqual(new Error(`[HTML REPORT][ERROR] - () => {} : The "path" argument must be of type string or an instance of Buffer or URL. Received function folder`))
+    const expectedMessage = `[HTML REPORT][ERROR] - () => {} : The "path" argument must be of type string or an instance of Buffer or URL. Received function folder`
+    expect(Html(config, result)).rejects.toEqual(new Error(expectedMessage))
   })
 })
