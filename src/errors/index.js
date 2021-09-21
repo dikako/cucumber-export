@@ -1,4 +1,4 @@
 module.exports = {
-  DEFAULT: require('./default'),
-  HTTP: require('./http')
-}
+  DEFAULT: require("./default"),
+  HTTP: require("./http")
+};
