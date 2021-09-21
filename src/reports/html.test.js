@@ -47,8 +47,7 @@ window.RESTQA_RESULT = {
 }`
     expect(fs.readFileSync(fileResult).toString('utf-8')).toEqual(expectedFileResult.trim())
     expect(fs.readFileSync(fileResult).toString('utf-8')).toEqual(expectedFileResult.trim())
-    expect(mockOpen).toHaveBeenCalled()
-    expect(mockOpen.mock.calls[0][0]).toEqual(`file://${FOLDER}/index.html`)
+    expect(mockOpen).toHaveBeenCalledWith(`file://${FOLDER}/index.html`)
   })
 
   test('Copy files from html-report/dist and add the result files but do not open in the browser', async () => {
