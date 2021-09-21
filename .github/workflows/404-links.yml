@@ -1,0 +1,13 @@
+name: Markdown Dead link checker
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check links
+      uses: restqa/404-links@master
+      with:
+        ignore: 'https://cucumber.io/docs/gherkin/reference/'
