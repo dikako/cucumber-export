@@ -86,7 +86,8 @@ let envConfig = {
       type: 'html',
       enabled: true,
       config: {
-        path: 'my-report-folder' // (default : ./report)
+        path: 'my-report-folder', // (default: ./report)
+        browserOpening: true // (default: true)
       }
     },
     {
@@ -299,7 +300,8 @@ Export the result to a local file folder as HTML format
   type: 'html',
   enabled: true,
   config: {
-    path: 'my-folder' // Folder to save the report
+    path: 'my-folder', // Folder to save the report
+    browserOpening: true // Open the report on the default browser
   }
 }
 ```

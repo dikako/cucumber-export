@@ -50,7 +50,10 @@ const envConfig = {
     },
     {
       type: 'html',
-      enabled: true
+      enabled: true,
+      config: {
+        browserOpening: true
+      }
     },
     {
       type: 'http-html-report',

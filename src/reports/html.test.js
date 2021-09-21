@@ -15,7 +15,12 @@ beforeEach(() => {
 describe('#Channel - html', () => {
 
   test('Copy files from html-report/dist and add the result files', async () => {
+    const mockOpen = jest.fn()
+    jest.mock('open', () => {
+      return mockOpen
+    })
     const Html = require('./html')
+    
     const config = {
       folder: FOLDER
     }
@@ -41,6 +46,46 @@ window.RESTQA_RESULT = {
   "foo": "bar"
 }`
     expect(fs.readFileSync(fileResult).toString('utf-8')).toEqual(expectedFileResult.trim())
+    expect(fs.readFileSync(fileResult).toString('utf-8')).toEqual(expectedFileResult.trim())
+    expect(mockOpen).toHaveBeenCalled()
+    expect(mockOpen.mock.calls[0][0]).toEqual(`file://${FOLDER}/index.html`)
+  })
+
+  test('Copy files from html-report/dist and add the result files but do not open in the browser', async () => {
+    const mockOpen = jest.fn()
+    jest.mock('open', () => {
+      return mockOpen
+    })
+    const Html = require('./html')
+    
+    const config = {
+      folder: FOLDER,
+      browserOpening: false
+    }
+    const result = {
+      "foo": "bar"
+    }
+
+    await expect(Html(config, result)).resolves.toEqual(`[HTML REPORT][SUCCESS] - Your report has been generated at file://${FOLDER}/index.html`)
+
+    fs.readdirSync(HTML_TEMPLATE_FOLDER).forEach( item => {
+      let expectedFilename = fs.existsSync(path.resolve(FOLDER, item)) 
+      let err = undefined
+      if (!expectedFilename) {
+        throw new Error(`The file ${item} hasn't been copied into ${FOLDER}`)
+      }
+    })
+
+    expect(fs.existsSync(FOLDER)).toBe(true)
+    const fileResult = path.resolve(FOLDER, 'restqa-result.js')
+    expect(fs.existsSync(fileResult)).toBe(true)
+    const expectedFileResult = `
+window.RESTQA_RESULT = {
+  "foo": "bar"
+}`
+    expect(fs.readFileSync(fileResult).toString('utf-8')).toEqual(expectedFileResult.trim())
+    expect(fs.readFileSync(fileResult).toString('utf-8')).toEqual(expectedFileResult.trim())
+    expect(mockOpen).not.toHaveBeenCalled()
   })
 
   test('Throw error if got any issue', () => {
