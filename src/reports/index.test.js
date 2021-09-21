@@ -4,7 +4,7 @@ describe("#services - Channels", () => {
     expect(Object.keys(index)).toHaveLength(11);
     expect(Object.keys(index)).toEqual([
       "webhook",
-      "http-html-report",
+      "html-remote",
       "elastic-search",
       "file",
       "slack",

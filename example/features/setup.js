@@ -23,6 +23,6 @@ Then('The title of the page should be {string}', function(bar) {
 })
 
 After(function() {
-  const file = fs.readFileSync(path.resolve(__dirname, 'image.png'))
-  this.attach(file, 'image/png')
+  //const file = fs.readFileSync(path.resolve(__dirname, 'image.png'))
+  //this.attach(file, 'image/png')
 })

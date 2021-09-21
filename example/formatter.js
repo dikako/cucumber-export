@@ -45,7 +45,7 @@ const envConfig = {
       }
     },
     {
-      type: 'http-html-report',
+      type: 'html-remote',
       enabled: false
     },
     {
@@ -56,7 +56,7 @@ const envConfig = {
       }
     },
     {
-      type: 'http-html-report',
+      type: 'html-remote',
       enabled: false,
       config: {
         url: 'https://httpdump.io/kqzjp',

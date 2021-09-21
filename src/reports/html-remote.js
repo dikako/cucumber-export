@@ -5,7 +5,7 @@ const {URL} = require("url");
 module.exports = function (config, result) {
   return new Promise((resolve, reject) => {
     config = config || {};
-    config.url = config.url || "https://restqa.io/reports";
+    config.url = config.url || "https://dashboard.restqa.io/reports";
     const url = new URL(config.url);
 
     const options = {
@@ -31,10 +31,13 @@ module.exports = function (config, result) {
     got(options)
       .then((res) => {
         resolve(
-          `[HTTP HTML REPORT][${
-            res.statusCode
-          }] - Access to your test report : ${config.url + "/" + result.id}`
+          `[HTML REMOTE][${res.statusCode}] - Access to your test report : ${
+            config.url + "/" + result.id
+          }`
         );
+      })
+      .catch((err) => {
+        reject(new Errors.HTTP("HTML REMOTE", err));
       })
       .catch((err) => {
         reject(new Errors.HTTP("HTTP HTML REPORT", err));

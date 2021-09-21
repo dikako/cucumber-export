@@ -2,7 +2,7 @@ beforeEach(() => {
   jest.resetModules();
 });
 
-describe("#report - HTTP HTML REPORT", () => {
+describe("#report - HTML REMOTE", () => {
   test("Rejected if the request fail", async () => {
     const Errors = require("../errors");
     const got = require("got");
@@ -17,7 +17,7 @@ describe("#report - HTTP HTML REPORT", () => {
 
     got.mockRejectedValue(gotError);
 
-    const HttpHtmlReport = require("./http-html-report");
+    const HtmlRemote = require("./html-remote");
     const config = {
       url: "http://my-url.test/report"
     };
@@ -25,11 +25,9 @@ describe("#report - HTTP HTML REPORT", () => {
     const result = {
       success: true
     };
-
-    await expect(HttpHtmlReport(config, result)).rejects.toThrow(
-      new Errors.HTTP("HTTP HTML REPORT", gotError)
+    await expect(HtmlRemote(config, result)).rejects.toThrow(
+      new Errors.HTTP("HTML REMOTE", gotError)
     );
-
     const expectedOptions = {
       hostname: "my-url.test",
       port: "",
@@ -51,7 +49,7 @@ describe("#report - HTTP HTML REPORT", () => {
       statusCode: 201
     });
 
-    const HttpHtmlReport = require("./http-html-report");
+    const HttpHtmlReport = require("./html-remote");
     const config = {
       url: "http://my-url.test/report"
     };
@@ -60,9 +58,8 @@ describe("#report - HTTP HTML REPORT", () => {
       id: "qqq-www-eee",
       success: true
     };
-
     await expect(HttpHtmlReport(config, result)).resolves.toBe(
-      "[HTTP HTML REPORT][201] - Access to your test report : http://my-url.test/report/qqq-www-eee"
+      "[HTML REMOTE][201] - Access to your test report : http://my-url.test/report/qqq-www-eee"
     );
 
     const expectedOptions = {
@@ -87,7 +84,7 @@ describe("#report - HTTP HTML REPORT", () => {
       statusCode: 201
     });
 
-    const HttpHtmlReport = require("./http-html-report");
+    const HtmlRemote = require("./html-remote");
     const config = {
       url: "http://my-url.test/report",
       auth: {
@@ -100,9 +97,8 @@ describe("#report - HTTP HTML REPORT", () => {
       id: "qqq-www-eee",
       success: true
     };
-
-    await expect(HttpHtmlReport(config, result)).resolves.toBe(
-      "[HTTP HTML REPORT][201] - Access to your test report : http://my-url.test/report/qqq-www-eee"
+    await expect(HtmlRemote(config, result)).resolves.toBe(
+      "[HTML REMOTE][201] - Access to your test report : http://my-url.test/report/qqq-www-eee"
     );
 
     const expectedOptions = {
@@ -130,20 +126,19 @@ describe("#report - HTTP HTML REPORT", () => {
       statusCode: 201
     });
 
-    const HttpHtmlReport = require("./http-html-report");
+    const HtmlRemote = require("./html-remote");
     const config = {};
 
     const result = {
       id: "qqq-www-eee",
       success: true
     };
-
-    await expect(HttpHtmlReport(config, result)).resolves.toBe(
-      "[HTTP HTML REPORT][201] - Access to your test report : https://restqa.io/reports/qqq-www-eee"
+    await expect(HtmlRemote(config, result)).resolves.toBe(
+      "[HTML REMOTE][201] - Access to your test report : https://dashboard.restqa.io/reports/qqq-www-eee"
     );
 
     const expectedOptions = {
-      hostname: "restqa.io",
+      hostname: "dashboard.restqa.io",
       port: "",
       protocol: "https:",
       pathname: "/reports",

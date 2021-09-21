@@ -1,6 +1,6 @@
 module.exports = {
   webhook: require("./webhook"),
-  "http-html-report": require("./http-html-report"),
+  "html-remote": require("./html-remote"),
   "elastic-search": require("./elastic-search"),
   file: require("./file"),
   slack: require("./slack"),
