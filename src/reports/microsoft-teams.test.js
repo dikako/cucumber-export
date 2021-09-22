@@ -1,12 +1,12 @@
-let testResult = {}
+let testResult = {};
 
 beforeEach(() => {
-  jest.resetModules()
+  jest.resetModules();
   testResult = {
-    id: 'xxx-yyy-zzz',
-    name: 'my test result',
-    env: 'local',
-    key: 'MY-KEY',
+    id: "xxx-yyy-zzz",
+    name: "my test result",
+    env: "local",
+    key: "MY-KEY",
     success: true,
     total: 10,
     passed: 10,
@@ -17,239 +17,243 @@ beforeEach(() => {
       skipped: 10,
       undefined: 0
     }
-  }
-})
+  };
+});
 
-describe('#report - MICROSOFT TEAMS', () => {
+describe("#report - MICROSOFT TEAMS", () => {
   test("Rejected if the config doesn't contain the url", () => {
-    const Teams = require('./microsoft-teams')
-    const config = {}
-    const result = {}
-    expect(Teams(config, result)).rejects.toThrow(
+    const Teams = require("./microsoft-teams");
+    const config = {};
+    const result = {};
+    return expect(Teams(config, result)).rejects.toThrow(
       new Error('config.url is required for the "microsoft-teams" report')
-    )
-  })
+    );
+  });
 
-  test('Resolved if the config only specify notification for failure', () => {
-    const got = require('got')
-    jest.mock('got')
+  test("Resolved if the config only specify notification for failure", () => {
+    const got = require("got");
+    jest.mock("got");
 
-    const Teams = require('./microsoft-teams')
+    const Teams = require("./microsoft-teams");
     const config = {
-      url: 'http://my-url.test/report',
+      url: "http://my-url.test/report",
       onlyFailed: true
-    }
+    };
 
     const result = {
       success: true
-    }
+    };
 
-    expect(Teams(config, result)).resolves.toBe(
-      '[MICROSOFT TEAMS] No notification is required because eveything is fine :)'
-    )
-    expect(got.mock.calls.length).toBe(0)
-  })
+    expect(got.mock.calls).toHaveLength(0);
+    return expect(Teams(config, result)).resolves.toBe(
+      "[MICROSOFT TEAMS] No notification is required because eveything is fine :)"
+    );
+  });
 
-  test('Rejected if an issue occured', () => {
-    const Errors = require('../errors')
+  test("Rejected if an issue occured", () => {
+    const Errors = require("../errors");
 
-    const Teams = require('./microsoft-teams')
+    const Teams = require("./microsoft-teams");
     const config = {
-      url: 'http://my-url.test/report',
+      url: "http://my-url.test/report",
       onlyFailed: false
-    }
+    };
 
-    testResult.scenarios = null
+    testResult.scenarios = null;
 
-    expect(Teams(config, testResult)).rejects.toThrow(
+    return expect(Teams(config, testResult)).rejects.toThrow(
       new Errors.DEFAULT(
-        'MICROSOFT TEAMS REPORT',
+        "MICROSOFT TEAMS REPORT",
         new Error("Cannot read property 'passed' of null")
       )
-    )
-  })
+    );
+  });
 
-  test('Rejected if the request fail', () => {
-    const Errors = require('../errors')
-    const got = require('got')
-    jest.mock('got')
-    const gotError = new Error('got Msg')
+  test("Rejected if the request fail", async () => {
+    const Errors = require("../errors");
+    const got = require("got");
+    jest.mock("got");
+    const gotError = new Error("got Msg");
     gotError.response = {
       statusCode: 503,
       body: {
-        err: 'foo/bar'
+        err: "foo/bar"
       }
-    }
+    };
 
-    got.mockRejectedValue(gotError)
+    got.mockRejectedValue(gotError);
 
-    const Teams = require('./microsoft-teams')
+    const Teams = require("./microsoft-teams");
     const config = {
-      url: 'http://my-url.test/report',
+      url: "http://my-url.test/report",
       onlyFailed: false
-    }
+    };
 
-    expect(Teams(config, testResult)).rejects.toThrow(
-      new Errors.HTTP('MICROSOFT TEAMS REPORT', gotError)
-    )
+    await expect(Teams(config, testResult)).rejects.toThrow(
+      new Errors.HTTP("MICROSOFT TEAMS REPORT", gotError)
+    );
 
     const teamsExpect = {
-      '@type': 'MessageCard',
-      '@context': 'http://schema.org/extensions',
-      themeColor: '007a5a',
-      summary: 'my test result passed',
+      "@type": "MessageCard",
+      "@context": "http://schema.org/extensions",
+      themeColor: "007a5a",
+      summary: "my test result passed",
       title: 'Test suite "my test result" results',
-      text: 'The test suite **passed (10/10)**',
+      text: "The test suite **passed (10/10)**",
       sections: [
         {
-          activityTitle: 'Details',
-          activitySubtitle: '*Powered By:* [@restqa](https://restqa.io|@restqa)',
-          activityImage: 'https://restqa.io/assets/img/utils/restqa-logo-passed.png',
+          activityTitle: "Details",
+          activitySubtitle:
+            "*Powered By:* [@restqa](https://restqa.io|@restqa)",
+          activityImage:
+            "https://restqa.io/assets/img/utils/restqa-logo-passed.png",
           activityText:
-            'Name: my test result\n\nEnvironment: local\n\n' +
-            'Key: MY-KEY\n\nExecution Id: xxx-yyy-zzz\n\n',
+            "Name: my test result\n\nEnvironment: local\n\n" +
+            "Key: MY-KEY\n\nExecution Id: xxx-yyy-zzz\n\n",
           facts: [
             {
-              name: 'Scenarios',
-              value: ''
+              name: "Scenarios",
+              value: ""
             },
             {
-              name: '• Passed',
-              value: '50'
+              name: "• Passed",
+              value: "50"
             },
             {
-              name: '• Failed',
-              value: '0'
+              name: "• Failed",
+              value: "0"
             },
             {
-              name: '• Skipped',
-              value: '10'
+              name: "• Skipped",
+              value: "10"
             },
             {
-              name: '• Undefined',
-              value: '0'
+              name: "• Undefined",
+              value: "0"
             }
           ],
           markdown: true
         }
       ],
       potentialAction: []
-    }
+    };
 
     const expectedOptions = {
-      hostname: 'my-url.test',
-      port: '',
-      protocol: 'http:',
-      pathname: '/report',
-      method: 'POST',
+      hostname: "my-url.test",
+      port: "",
+      protocol: "http:",
+      pathname: "/report",
+      method: "POST",
       body: JSON.stringify(teamsExpect)
-    }
-    expect(got.mock.calls.length).toBe(1)
-    expect(got.mock.calls[0][0]).toEqual(expectedOptions)
-  })
+    };
+    expect(got.mock.calls).toHaveLength(1);
+    expect(got.mock.calls[0][0]).toEqual(expectedOptions);
+  });
 
-  test('Success case with config.showError = true, and report link)', () => {
-    const got = require('got')
-    jest.mock('got')
+  test("Success case with config.showError = true, and report link)", async () => {
+    const got = require("got");
+    jest.mock("got");
     got.mockResolvedValue({
       statusCode: 201,
       body: {
-        result: 'ok'
+        result: "ok"
       }
-    })
+    });
 
-    const Teams = require('./microsoft-teams')
+    const Teams = require("./microsoft-teams");
 
     const config = {
-      url: 'http://my-url.test/report',
+      url: "http://my-url.test/report",
       onlyFailed: false,
       showErrors: true,
-      reportUrl: 'http://url-of-the-report/{uuid}'
-    }
+      reportUrl: "http://url-of-the-report/{uuid}"
+    };
 
-    testResult.success = false
-    testResult.passed = 9
-    testResult.failed = 1
-    testResult.scenarios.passed = 49
-    testResult.scenarios.failed = 1
+    testResult.success = false;
+    testResult.passed = 9;
+    testResult.failed = 1;
+    testResult.scenarios.passed = 49;
+    testResult.scenarios.failed = 1;
     testResult.features = [
       {
-        feature_name: 'Feature name',
+        feature_name: "Feature name",
         elements: [
           {
-            name: 'This is scenario name',
+            name: "This is scenario name",
             steps: [
               {
-                keyword: 'When',
-                name: 'i have an issue',
+                keyword: "When",
+                name: "i have an issue",
                 line: 45,
                 result: {
-                  status: 'failed',
-                  error_message: 'Not working'
+                  status: "failed",
+                  error_message: "Not working"
                 }
               }
             ]
           }
         ]
       }
-    ]
+    ];
 
-    expect(Teams(config, testResult)).resolves.toBe(
-      '[MICROSOFT TEAMS REPORT][201] - http://my-url.test/report'
-    )
+    await expect(Teams(config, testResult)).resolves.toBe(
+      "[MICROSOFT TEAMS REPORT][201] - http://my-url.test/report"
+    );
 
     const teamsExpect = {
-      '@type': 'MessageCard',
-      '@context': 'http://schema.org/extensions',
-      themeColor: 'ff0000',
-      summary: 'my test result failed',
+      "@type": "MessageCard",
+      "@context": "http://schema.org/extensions",
+      themeColor: "ff0000",
+      summary: "my test result failed",
       title: 'Test suite "my test result" results',
-      text: 'The test suite **failed (9/10)**',
+      text: "The test suite **failed (9/10)**",
       sections: [
         {
-          activityTitle: 'Details',
-          activitySubtitle: '*Powered By:* [@restqa](https://restqa.io|@restqa)',
-          activityImage: 'https://restqa.io/assets/img/utils/restqa-logo-failed.png',
+          activityTitle: "Details",
+          activitySubtitle:
+            "*Powered By:* [@restqa](https://restqa.io|@restqa)",
+          activityImage:
+            "https://restqa.io/assets/img/utils/restqa-logo-failed.png",
           activityText:
-            'Name: my test result\n\nEnvironment: local\n\nKey: MY-KEY\n\nExecution Id: xxx-yyy-zzz\n\n',
+            "Name: my test result\n\nEnvironment: local\n\nKey: MY-KEY\n\nExecution Id: xxx-yyy-zzz\n\n",
           facts: [
             {
-              name: 'Scenarios',
-              value: ''
+              name: "Scenarios",
+              value: ""
             },
             {
-              name: '• Passed',
-              value: '49'
+              name: "• Passed",
+              value: "49"
             },
             {
-              name: '• Failed',
-              value: '1'
+              name: "• Failed",
+              value: "1"
             },
             {
-              name: '• Skipped',
-              value: '10'
+              name: "• Skipped",
+              value: "10"
             },
             {
-              name: '• Undefined',
-              value: '0'
+              name: "• Undefined",
+              value: "0"
             }
           ],
           markdown: true
         },
         {
-          activityTitle: '📕 *Feature*: Feature name',
+          activityTitle: "📕 *Feature*: Feature name",
           facts: [
             {
-              name: 'Scenario',
-              value: 'This is scenario name'
+              name: "Scenario",
+              value: "This is scenario name"
             },
             {
-              name: 'Failed step',
-              value: 'When i have an issue (Line 45)'
+              name: "Failed step",
+              value: "When i have an issue (Line 45)"
             },
             {
-              name: 'Error message',
-              value: '\n\n    Not working'
+              name: "Error message",
+              value: "\n\n    Not working"
             }
           ],
           markdown: true
@@ -257,27 +261,27 @@ describe('#report - MICROSOFT TEAMS', () => {
       ],
       potentialAction: [
         {
-          '@type': 'OpenUri',
-          name: '📊 View test report',
+          "@type": "OpenUri",
+          name: "📊 View test report",
           targets: [
             {
-              os: 'default',
-              uri: 'http://url-of-the-report/xxx-yyy-zzz'
+              os: "default",
+              uri: "http://url-of-the-report/xxx-yyy-zzz"
             }
           ]
         }
       ]
-    }
+    };
 
     const expectedOptions = {
-      hostname: 'my-url.test',
-      port: '',
-      protocol: 'http:',
-      pathname: '/report',
-      method: 'POST',
+      hostname: "my-url.test",
+      port: "",
+      protocol: "http:",
+      pathname: "/report",
+      method: "POST",
       body: JSON.stringify(teamsExpect)
-    }
-    expect(got.mock.calls.length).toBe(1)
-    expect(got.mock.calls[0][0]).toEqual(expectedOptions)
-  })
-})
+    };
+    expect(got.mock.calls).toHaveLength(1);
+    expect(got.mock.calls[0][0]).toEqual(expectedOptions);
+  });
+});

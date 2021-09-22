@@ -1,12 +1,12 @@
-let testResult = {}
+let testResult = {};
 
 beforeEach(() => {
-  jest.resetModules()
+  jest.resetModules();
   testResult = {
-    id: 'xxx-yyy-zzz',
-    name: 'my test result',
-    env: 'local',
-    key: 'MY-KEY',
+    id: "xxx-yyy-zzz",
+    name: "my test result",
+    env: "local",
+    key: "MY-KEY",
     success: true,
     total: 10,
     passed: 10,
@@ -17,85 +17,88 @@ beforeEach(() => {
       skipped: 10,
       undefined: 0
     }
-  }
-})
+  };
+});
 
-describe('#report - DISCORD', () => {
+describe("#report - DISCORD", () => {
   test("Rejected if the config doesn't contain the url", () => {
-    const Discord = require('./discord')
-    const config = {}
-    const result = {}
-    expect(Discord(config, result)).rejects.toThrow(
+    const Discord = require("./discord");
+    const config = {};
+    const result = {};
+    return expect(Discord(config, result)).rejects.toThrow(
       new Error('config.url is required for the "discord" report')
-    )
-  })
+    );
+  });
 
-  test('Resolved if the config only specify notification for failure', () => {
-    const got = require('got')
-    jest.mock('got')
+  test("Resolved if the config only specify notification for failure", () => {
+    const got = require("got");
+    jest.mock("got");
 
-    const Discord = require('./discord')
+    const Discord = require("./discord");
     const config = {
-      url: 'http://my-url.test/report',
+      url: "http://my-url.test/report",
       onlyFailed: true
-    }
+    };
 
     const result = {
       success: true
-    }
+    };
 
-    expect(Discord(config, result)).resolves.toBe(
-      '[DISCORD] No notification is required because eveything is fine :)'
-    )
-    expect(got.mock.calls.length).toBe(0)
-  })
+    expect(got.mock.calls).toHaveLength(0);
+    return expect(Discord(config, result)).resolves.toBe(
+      "[DISCORD] No notification is required because eveything is fine :)"
+    );
+  });
 
-  test('Discord if an issue occured', () => {
-    const Errors = require('../errors')
+  test("Discord if an issue occured", () => {
+    const Errors = require("../errors");
 
-    const Discord = require('./discord')
+    const Discord = require("./discord");
     const config = {
-      url: 'http://my-url.test/report',
+      url: "http://my-url.test/report",
       onlyFailed: false
-    }
+    };
 
-    testResult.scenarios = null
+    testResult.scenarios = null;
 
-    expect(Discord(config, testResult)).rejects.toThrow(
-      new Errors.DEFAULT('DISCORD REPORT', new Error("Cannot read property 'passed' of null"))
-    )
-  })
+    return expect(Discord(config, testResult)).rejects.toThrow(
+      new Errors.DEFAULT(
+        "DISCORD REPORT",
+        new Error("Cannot read property 'passed' of null")
+      )
+    );
+  });
 
-  test('Rejected if the request fail', () => {
-    const Errors = require('../errors')
-    const got = require('got')
-    jest.mock('got')
-    const gotError = new Error('got Msg')
+  test("Rejected if the request fail", async () => {
+    const Errors = require("../errors");
+    const got = require("got");
+    jest.mock("got");
+    const gotError = new Error("got Msg");
     gotError.response = {
       statusCode: 503,
       body: {
-        err: 'foo/bar'
+        err: "foo/bar"
       }
-    }
+    };
 
-    got.mockRejectedValue(gotError)
+    got.mockRejectedValue(gotError);
 
-    const Discord = require('./discord')
+    const Discord = require("./discord");
     const config = {
-      url: 'http://my-url.test/report',
+      url: "http://my-url.test/report",
       onlyFailed: false
-    }
+    };
 
-    expect(Discord(config, testResult)).rejects.toThrow(
-      new Errors.HTTP('DISCORD REPORT', gotError)
-    )
+    await expect(Discord(config, testResult)).rejects.toThrow(
+      new Errors.HTTP("DISCORD REPORT", gotError)
+    );
 
     const discordExpect = {
       username: null,
       tts: false,
       embeds: [
         {
-          title: 'The test suite **passed (10/10)**',
+          title: "The test suite **passed (10/10)**",
           description: `**Name:** my test result
 **Key:** MY-KEY
 **Environment:** local
@@ -109,85 +112,85 @@ describe('#report - DISCORD', () => {
 
 *Powered By:* [@restqa](https://restqa.io)`,
           thumbnail: {
-            url: 'https://restqa.io/assets/img/utils/restqa-logo-passed.png'
+            url: "https://restqa.io/assets/img/utils/restqa-logo-passed.png"
           },
           color: 31322
         }
       ]
-    }
+    };
 
     const expectedOptions = {
-      hostname: 'my-url.test',
-      port: '',
-      protocol: 'http:',
-      pathname: '/report',
-      method: 'POST',
+      hostname: "my-url.test",
+      port: "",
+      protocol: "http:",
+      pathname: "/report",
+      method: "POST",
       body: JSON.stringify(discordExpect),
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       }
-    }
+    };
 
-    expect(got.mock.calls.length).toBe(1)
-    expect(got.mock.calls[0][0]).toEqual(expectedOptions)
-  })
+    expect(got.mock.calls).toHaveLength(1);
+    expect(got.mock.calls[0][0]).toEqual(expectedOptions);
+  });
 
-  test('Success case with config.showError = true, and report link)', () => {
-    const got = require('got')
-    jest.mock('got')
+  test("Success case with config.showError = true, and report link)", async () => {
+    const got = require("got");
+    jest.mock("got");
     got.mockResolvedValue({
       statusCode: 201,
       body: {
-        result: 'ok'
+        result: "ok"
       }
-    })
+    });
 
-    const Discord = require('./discord')
+    const Discord = require("./discord");
 
     const config = {
-      url: 'http://my-url.test/report',
+      url: "http://my-url.test/report",
       onlyFailed: false,
       showErrors: true,
-      reportUrl: 'http://url-of-the-report/{uuid}'
-    }
+      reportUrl: "http://url-of-the-report/{uuid}"
+    };
 
-    testResult.success = false
-    testResult.passed = 9
-    testResult.failed = 1
-    testResult.scenarios.passed = 49
-    testResult.scenarios.failed = 1
+    testResult.success = false;
+    testResult.passed = 9;
+    testResult.failed = 1;
+    testResult.scenarios.passed = 49;
+    testResult.scenarios.failed = 1;
     testResult.features = [
       {
-        feature_name: 'Feature name',
+        feature_name: "Feature name",
         elements: [
           {
-            name: 'This is scenario name',
+            name: "This is scenario name",
             steps: [
               {
-                keyword: 'When',
-                name: 'i have an issue',
+                keyword: "When",
+                name: "i have an issue",
                 line: 45,
                 result: {
-                  status: 'failed',
-                  error_message: 'Not working'
+                  status: "failed",
+                  error_message: "Not working"
                 }
               }
             ]
           }
         ]
       }
-    ]
+    ];
 
-    expect(Discord(config, testResult)).resolves.toBe(
-      '[DISCORD REPORT][201] - http://my-url.test/report'
-    )
+    await expect(Discord(config, testResult)).resolves.toBe(
+      "[DISCORD REPORT][201] - http://my-url.test/report"
+    );
 
     const discordExpect = {
       username: null,
       tts: false,
       embeds: [
         {
-          title: 'The test suite **failed (9/10)**',
+          title: "The test suite **failed (9/10)**",
           description: `[**📊 View test report**](http://url-of-the-report/xxx-yyy-zzz)
 **Name:** my test result
 **Key:** MY-KEY
@@ -202,35 +205,35 @@ describe('#report - DISCORD', () => {
 
 *Powered By:* [@restqa](https://restqa.io)`,
           thumbnail: {
-            url: 'https://restqa.io/assets/img/utils/restqa-logo-failed.png'
+            url: "https://restqa.io/assets/img/utils/restqa-logo-failed.png"
           },
           color: 16711680,
           fields: [
             {
-              name: '📕 **Feature**: Feature name',
+              name: "📕 **Feature**: Feature name",
               value: `**Scenario**: This is scenario name
 **Failed step**: When i have an issue (Line 45)
-${'```'} Not working ${'```'}
+${"```"} Not working ${"```"}
 ----`
             }
           ],
-          url: 'http://url-of-the-report/xxx-yyy-zzz'
+          url: "http://url-of-the-report/xxx-yyy-zzz"
         }
       ]
-    }
+    };
 
     const expectedOptions = {
-      hostname: 'my-url.test',
-      port: '',
-      protocol: 'http:',
-      pathname: '/report',
-      method: 'POST',
+      hostname: "my-url.test",
+      port: "",
+      protocol: "http:",
+      pathname: "/report",
+      method: "POST",
       body: JSON.stringify(discordExpect),
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       }
-    }
-    expect(got.mock.calls.length).toBe(1)
-    expect(got.mock.calls[0][0]).toEqual(expectedOptions)
-  })
-})
+    };
+    expect(got.mock.calls).toHaveLength(1);
+    expect(got.mock.calls[0][0]).toEqual(expectedOptions);
+  });
+});

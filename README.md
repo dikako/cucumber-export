@@ -25,7 +25,7 @@
   - [Elastic-Search](#elastic-search)
      - [kibana](#kibana)
      - [Grafana](#grafana)
-  - [http-html-report](#http-html-report)
+  - [HTML Remote](#html-remote)
   - [stream](#stream)
 - [Development](#development)
 - [Todo](#todo)
@@ -86,14 +86,15 @@ let envConfig = {
       type: 'html',
       enabled: true,
       config: {
-        path: 'my-report-folder' // (default : ./report)
+        path: 'my-report-folder', // (default: ./report)
+        browserOpening: true // (default: true)
       }
     },
     {
-      type: 'http-html-report',
+      type: 'html-remote',
       enabled: true,
       config: {
-        url: 'https://html-report.your-domain.dev' // (default : https://html-report.restqa.io)
+        url: 'https://html-report.your-domain.dev' // (default : https://dashboard.restqa.io/reports)
       }
     },
     {
@@ -299,7 +300,8 @@ Export the result to a local file folder as HTML format
   type: 'html',
   enabled: true,
   config: {
-    path: 'my-folder' // Folder to save the report
+    path: 'my-folder', // Folder to save the report
+    browserOpening: true // Open the report on the default browser
   }
 }
 ```
@@ -484,25 +486,24 @@ The Elastic Search export allows you to create nice dashboard within Grafana or 
 
 [Access to the Kibana dashboard installation guide](./dashboard-setup/kibana/README.md)
 
-### Http html Report
+### HTML Remote
 
 Export the result to a remote endpoint in order to generate an html report.
 
-For more information about the generation of the report you can look at the project : https://github.com/restqa/cucumber-html-reporter-server
-Basically you have 2 options to use this reporter.]:
+For more information about the generation of the report you can look at the project : 
 
-1. Use the Saas version hosted on : html-report.restqa.io (pro: ready, con: data privacy, shared)
-2. Host your own, sotfware available here : https://github.com/restqa/sidekick-server
+1. Use the SaaS version hosted on : dashboard.restqa.io (pro: ready, cons: data privacy, shared)
+2. Host your own, take a look at the [documentation](https://docs.restqa.io/reporting/html-remote)
 
 ```
 {
-  type: 'http-html-report',
+  type: 'html-remote',
   enabled: true,
   config: {
-    url: 'https://html-report.your-domain.dev' // (default : https://restqa.io/reports),
+    url: 'https://html-remote.your-domain.dev', // (default : https://dashboard.restqa.io/reports),
     auth: { // Authentication through basic auth
-      username: 'olive',
-      password: 'test'
+      username: 'john',
+      password: 'secure123'
     }
   }
 }

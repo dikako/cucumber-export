@@ -45,15 +45,18 @@ const envConfig = {
       }
     },
     {
-      type: 'http-html-report',
+      type: 'html-remote',
       enabled: false
     },
     {
       type: 'html',
-      enabled: true
+      enabled: true,
+      config: {
+        browserOpening: true
+      }
     },
     {
-      type: 'http-html-report',
+      type: 'html-remote',
       enabled: false,
       config: {
         url: 'https://httpdump.io/kqzjp',
