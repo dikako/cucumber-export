@@ -17,7 +17,7 @@ const envConfig = {
   outputs: [
     {
       type: 'stream',
-      enabled: true,
+      enabled: false,
       config: {
         instance
       }
