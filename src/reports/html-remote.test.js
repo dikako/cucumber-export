@@ -134,7 +134,7 @@ describe("#report - HTML REMOTE", () => {
       success: true
     };
     await expect(HtmlRemote(config, result)).resolves.toBe(
-      "[HTML REMOTE][201] - Access to your test report : https://dashboard.restqa.io/reports/qqq-www-eee"
+      "[HTML REMOTE][201] - Access to your test report : https://dashboard.restqa.io/reports/qqq-www-eee (This link will expire in 5 minutes)"
     );
 
     const expectedOptions = {
