@@ -2,10 +2,19 @@ const got = require("got");
 const Errors = require("../errors");
 const {URL} = require("url");
 
+const dashboardReportsURL = "https://dashboard.restqa.io/reports";
+
+function getExpiryTimeMessage(config) {
+  if (config.url === dashboardReportsURL) {
+    return " (This link will expire in 5 minutes)";
+  }
+
+  return "";
+}
 module.exports = function (config, result) {
   return new Promise((resolve, reject) => {
     config = config || {};
-    config.url = config.url || "https://dashboard.restqa.io/reports";
+    config.url = config.url || dashboardReportsURL;
     const url = new URL(config.url);
 
     const options = {
@@ -29,13 +38,13 @@ module.exports = function (config, result) {
     }
 
     got(options)
-      .then((res) => {
+      .then((res) =>
         resolve(
           `[HTML REMOTE][${res.statusCode}] - Access to your test report : ${
             config.url + "/" + result.id
-          }`
-        );
-      })
+          }` + getExpiryTimeMessage(config)
+        )
+      )
       .catch((err) => {
         reject(new Errors.HTTP("HTML REMOTE", err));
       })
