@@ -191,6 +191,7 @@ let envConfig = {
   customExporters: {
     'custom-report-key': function(config) {
       const { key } = config
+      //console.log(result.success)
       return Promise.resolve('[CUSTOM REPORT][SUCCESS] - Your custom report is great!')
     }
   }
@@ -546,6 +547,7 @@ let options = {
   customExporters: {
     'custom-report-key': function(config) {
       const { key } = config
+      //console.log(result.success)
       return Promise.resolve('[CUSTOM REPORT][SUCCESS] - Your custom report is great!')
     }
   }

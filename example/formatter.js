@@ -130,8 +130,9 @@ const envConfig = {
     }
   ],
   customExporters: {
-    'custom-report-key': function(config) {
+    'custom-report-key': function(config, result) {
       const { key } = config
+      //console.log(result.success)
       return Promise.resolve(`[CUSTOM REPORT][SUCCESS] - Your custom report is great!`)
     }
   }
