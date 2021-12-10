@@ -8,11 +8,13 @@ module.exports = function (config, testSuiteResult) {
     throw new Error("The config.outputs needs to be an array");
   }
 
+  const reports = Object.assign(Reports, config.customExporters || {});
+
   config.outputs.forEach((out) => {
-    if (!Reports[out.type])
+    if (!reports[out.type])
       throw new Error(
         `The ${out.type} output doesn't exist. Available: ${Object.keys(
-          Reports
+          reports
         ).join(", ")}`
       );
   });
@@ -36,7 +38,7 @@ module.exports = function (config, testSuiteResult) {
     const outputs = config.outputs
       .filter((output) => output.enabled)
       .map((output) => {
-        return Reports[output.type].call(this, output.config, {...result});
+        return reports[output.type].call(this, output.config, {...result});
       });
 
     if (!outputs.length) return;

@@ -26,7 +26,8 @@
      - [kibana](#kibana)
      - [Grafana](#grafana)
   - [HTML Remote](#html-remote)
-  - [stream](#stream)
+  - [Stream](#stream)
+  - [Custom exporter](#custom-exporter)
 - [Development](#development)
 - [Todo](#todo)
 
@@ -178,8 +179,22 @@ let envConfig = {
         iconEmoji: 'laughing',  // An emoji tag without the ':'s for bot profile picture (only works if bot is allowed to change image)
         displayedErrorsLimit: 25 // Limit the number of errors displayed in one message
       }
+    },
+    {
+      type: 'custom-report-key',
+      enabled: true,
+      config: {
+        key: 'value'
+      }
     }
-  ]
+  ],
+  customExporters: {
+    'custom-report-key': function(config) {
+      const { key } = config
+      //console.log(result.success)
+      return Promise.resolve('[CUSTOM REPORT][SUCCESS] - Your custom report is great!')
+    }
+  }
 }
 
 module.exports = getFormatter(envConfig)
@@ -505,6 +520,48 @@ For more information about the generation of the report you can look at the proj
       username: 'john',
       password: 'secure123'
     }
+  }
+}
+```
+
+### Custom exporter
+
+In case any of these exporter is matching your need you can build your own.
+
+Your options object should look like:
+
+```js
+let options = {
+  uuid: 'xxx-yyy-zzz',
+  name: 'local',
+  env: 'uat',
+  outputs: [
+    {
+      type: 'custom-report-key',
+      enabled: true,
+      config: {
+        key: 'value'
+      }
+    }
+  ],
+  customExporters: {
+    'custom-report-key': function(config) {
+      const { key } = config
+      //console.log(result.success)
+      return Promise.resolve('[CUSTOM REPORT][SUCCESS] - Your custom report is great!')
+    }
+  }
+}
+```
+
+
+#### 2. Add your config in the outputs
+```
+{
+  type: 'stream',
+  enabled: true,
+  config: {
+    instance: WritableStream // The writable stream instance
   }
 }
 ```
