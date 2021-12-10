@@ -112,6 +112,55 @@ describe("#index - src", () => {
     expect(Reports["elastic-search"].mock.calls).toHaveLength(0);
   });
 
+  test("Success calls with custom exporter", async () => {
+    jest.mock("moment", () => () => ({
+      format: () => "2020–01–30T12:34:56+00:00"
+    }));
+
+    const Format = require("./format");
+    jest.mock("./format");
+    Format.mockReturnValue({result: true});
+
+    const Index = require("./index");
+    const config = {
+      uuid: 987,
+      name: "my name",
+      key: "my key",
+      env: "my env",
+      outputs: [
+        {
+          type: "myExporter",
+          enabled: true,
+          config: {
+            you: "test"
+          }
+        }
+      ],
+      customExporters: {
+        myExporter: function () {
+          return Promise.resolve(["my custom exporter response"]);
+        }
+      }
+    };
+
+    const testRunResult = {
+      result: {
+        duration: 2000
+      }
+    };
+
+    const instance = new Index(config, testRunResult);
+    const result = [
+      {
+        foo: "bar"
+      }
+    ];
+
+    await expect(instance.exports(result)).resolves.toEqual([
+      {status: "fulfilled", value: ["my custom exporter response"]}
+    ]);
+  });
+
   test("Success calls with some ouputs enabled", async () => {
     jest.mock("moment", () => () => ({
       format: () => "2020–01–30T12:34:56+00:00"

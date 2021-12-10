@@ -183,7 +183,7 @@ let envConfig = {
     {
       type: 'custom-report-key',
       enabled: true,
-      config {
+      config: {
         key: 'value'
       }
     }
@@ -191,7 +191,7 @@ let envConfig = {
   customExporters: {
     'custom-report-key': function(config) {
       const { key } = config
-      return Promise.resolve([CUSTOM REPORT][SUCCESS] - Your custom report is great!')
+      return Promise.resolve('[CUSTOM REPORT][SUCCESS] - Your custom report is great!')
     }
   }
 }
@@ -538,7 +538,7 @@ let options = {
     {
       type: 'custom-report-key',
       enabled: true,
-      config {
+      config: {
         key: 'value'
       }
     }
@@ -546,7 +546,7 @@ let options = {
   customExporters: {
     'custom-report-key': function(config) {
       const { key } = config
-      return Promise.resolve([CUSTOM REPORT][SUCCESS] - Your custom report is great!')
+      return Promise.resolve('[CUSTOM REPORT][SUCCESS] - Your custom report is great!')
     }
   }
 }

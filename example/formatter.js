@@ -52,7 +52,7 @@ const envConfig = {
       type: 'html',
       enabled: true,
       config: {
-        browserOpening: true
+        browserOpening: false
       }
     },
     {
@@ -120,8 +120,21 @@ const envConfig = {
       config: {
         path: 'my-report.json' // File to save
       }
+    },
+    {
+      type: 'custom-report-key',
+      enabled: true,
+      config:{
+        key: 'value'
+      }
     }
-  ]
+  ],
+  customExporters: {
+    'custom-report-key': function(config) {
+      const { key } = config
+      return Promise.resolve(`[CUSTOM REPORT][SUCCESS] - Your custom report is great!`)
+    }
+  }
 }
 
 module.exports = getFormatter(envConfig)
