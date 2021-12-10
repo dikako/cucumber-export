@@ -7,12 +7,12 @@ describe("#index - src", () => {
     const Format = require("./format");
     jest.mock("./format");
 
-    const Index = require("./index");
+    const Instance = require("./index");
     const config = {};
     const testRunResult = {};
     expect(() => {
       /* eslint-disable no-new */
-      new Index(config, testRunResult);
+      new Instance(config, testRunResult);
     }).toThrow("The config.outputs needs to be an array");
     expect(Format.mock.calls).toHaveLength(0);
   });
@@ -22,7 +22,7 @@ describe("#index - src", () => {
     jest.mock("./format");
 
     const list = require("./reports");
-    const Index = require("./index");
+    const Instance = require("./index");
     const config = {
       outputs: [
         {
@@ -34,7 +34,7 @@ describe("#index - src", () => {
     const testRunResult = {};
     expect(() => {
       /* eslint-disable no-new */
-      new Index(config, testRunResult);
+      new Instance(config, testRunResult);
     }).toThrow(
       `The spaceX output doesn't exist. Available: ${Object.keys(list).join(
         ", "
@@ -47,12 +47,12 @@ describe("#index - src", () => {
     const Format = require("./format");
     jest.mock("./format");
 
-    const Index = require("./index");
+    const Instance = require("./index");
     const config = {
       outputs: []
     };
     const testRunResult = {};
-    const instance = new Index(config, testRunResult);
+    const instance = new Instance(config, testRunResult);
     const result = [];
     instance.exports(result);
     expect(Format.mock.calls).toHaveLength(0);
@@ -77,7 +77,7 @@ describe("#index - src", () => {
       "elastic-search": jest.fn()
     };
 
-    const Index = require("./index");
+    const Instance = require("./index");
     const config = {
       outputs: [
         {
@@ -93,7 +93,7 @@ describe("#index - src", () => {
       }
     };
 
-    const instance = new Index(config, testRunResult);
+    const instance = new Instance(config, testRunResult);
     const result = [
       {
         foo: "bar"
@@ -121,7 +121,7 @@ describe("#index - src", () => {
     jest.mock("./format");
     Format.mockReturnValue({result: true});
 
-    const Index = require("./index");
+    const Instance = require("./index");
     const config = {
       uuid: 987,
       name: "my name",
@@ -149,7 +149,7 @@ describe("#index - src", () => {
       }
     };
 
-    const instance = new Index(config, testRunResult);
+    const instance = new Instance(config, testRunResult);
     const result = [
       {
         foo: "bar"
@@ -176,7 +176,7 @@ describe("#index - src", () => {
       Promise.resolve(["my elk response"])
     );
 
-    const Index = require("./index");
+    const Instance = require("./index");
     const config = {
       uuid: 987,
       name: "my name",
@@ -199,7 +199,7 @@ describe("#index - src", () => {
       }
     };
 
-    const instance = new Index(config, testRunResult);
+    const instance = new Instance(config, testRunResult);
     const result = [
       {
         foo: "bar"
@@ -239,7 +239,7 @@ describe("#index - src", () => {
       Promise.reject(new Error("my elk Error"))
     );
 
-    const Index = require("./index");
+    const Instance = require("./index");
     const config = {
       uuid: 987,
       startTime: "2020–01–30T12:34:56+00:00",
@@ -260,7 +260,7 @@ describe("#index - src", () => {
       }
     };
 
-    const instance = new Index(config, testRunResult);
+    const instance = new Instance(config, testRunResult);
     const result = [
       {
         foo: "bar"
